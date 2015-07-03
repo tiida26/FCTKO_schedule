@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export LANG=en_US.UTF-8
+
 URL=http://www.fctokyo.co.jp/category/schedule
 DATETIME=$(date +%Y%m%d%H%M%S)
 BASE_DIR=$(dirname $0)
@@ -23,9 +25,12 @@ cat $SCHEDULE_FILE |\
 	 perl -pe 's/\(.+?\)//g' |\
 	 awk '{print$4" "$2" "$3" "$5}' |\
 	 column -t |\
+	 grep -v '休み節' |\
+	 perl -pe 's/未定/10:00/g' |\
+	 perl -pe 's/7\/9発表予定/10:00/g' |\
 while read team gameday kickoff location
 do
-	if [ $location = "味の素スタジアム" ] ; then
+	if [ "$location" = "味の素スタジアム" ] ; then
 		team="[H]vs$team"
 	else
 		team="[A]vs$team"
